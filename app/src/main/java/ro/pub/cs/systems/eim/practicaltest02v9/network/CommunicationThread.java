@@ -43,6 +43,9 @@ public class CommunicationThread extends Thread {
             String word = bufferedReader.readLine();
             String letter_nr = bufferedReader.readLine();
 
+            Log.d(Constants.TAG, "Clientul a cerut " + word + " " + letter_nr);
+
+//            word = "nevermind";
             String query = Constants.WEB_SERVICE_ADDRESS +
                     ":" + word;
 
@@ -64,6 +67,7 @@ public class CommunicationThread extends Thread {
             Log.i(Constants.TAG, "[comm thread]: got the response from webservice");
 
             JSONObject content = new JSONObject(pageSourceCode);
+            Log.d(Constants.TAG, pageSourceCode);
             if (content.has("cod") && content.getString("cod").equals("404")) {
                 Log.e(Constants.TAG, "[COMMUNICATION THREAD] '" + word + "' not found!");
                 printWriter.println("'" + word + "' not found!");
@@ -73,62 +77,16 @@ public class CommunicationThread extends Thread {
 
             JSONArray resultArray = content.getJSONArray("all");
             JSONObject res;
-            Log.d(Constants.TAG, pageSourceCode);
-//
-//            String condition = "";
-////
-//            for (int i = 0; i < resultArray.length(); i++) {
-//                res = resultArray.getJSONObject(i);
-//                condition += weather.getString(Constants.MAIN) + " : " + weather.getString(Constants.DESCRIPTION);
-//
-//                if (i < weatherArray.length() - 1) {
-//                    condition += ";";
-//                }
-//            }
-////
-//            JSONObject main = content.getJSONObject(Constants.MAIN);
-//            String temperature = main.getString(Constants.TEMP);
-//            String pressure = main.getString(Constants.PRESSURE);
-//            String humidity = main.getString(Constants.HUMIDITY);
-//
-//            JSONObject wind = content.getJSONObject(Constants.WIND);
-//            String windSpeed = wind.getString(Constants.SPEED);
-//
-//            weatherForecastInformation = new WeatherForecastInformation(
-//                    temperature, windSpeed, condition, pressure, humidity
-//            );
-//            serverThread.setData(city, weatherForecastInformation);
-//
-//            if (weatherForecastInformation == null) {
-//                Log.e(Constants.TAG, "[COMMUNICATION THREAD] Weather Forecast Information is null!");
-//                return;
-//            }
-//
-//            String result = null;
-//            switch (informationType) {
-//                case Constants.ALL:
-//                    result = weatherForecastInformation.toString();
-//                    break;
-//                case Constants.TEMPERATURE:
-//                    result = weatherForecastInformation.getTemperature();
-//                    break;
-//                case Constants.WIND_SPEED:
-//                    result = weatherForecastInformation.getWindSpeed();
-//                    break;
-//                case Constants.CONDITION:
-//                    result = weatherForecastInformation.getCondition();
-//                    break;
-//                case Constants.HUMIDITY:
-//                    result = weatherForecastInformation.getHumidity();
-//                    break;
-//                case Constants.PRESSURE:
-//                    result = weatherForecastInformation.getPressure();
-//                    break;
-//                default:
-//                    result = "[COMMUNICATION THREAD] Wrong information type (all / temperature / wind_speed / condition / humidity / pressure)!";
-//            }
 
-            printWriter.println(pageSourceCode);
+            String result = "";
+
+            for (int i = 0; i < resultArray.length(); i++) {
+                if (resultArray.getString(i).length() > Integer.parseInt(letter_nr)) {
+                    result += resultArray.getString(i) + " ";
+                }
+            }
+
+            printWriter.println(result);
             printWriter.flush();
 
         } catch (IOException | JSONException e) {

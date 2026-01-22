@@ -35,6 +35,7 @@ public class PracticalTest02v9MainActivity extends AppCompatActivity {
         EditText worlEditText = (EditText) findViewById(R.id.word);
         EditText letterNrEditText = (EditText) findViewById(R.id.letter_nr);
         Button getResponseEditText = (Button) findViewById(R.id.get_result);
+        EditText serverEdittextPort = findViewById(R.id.server_port_edit_text);
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +47,7 @@ public class PracticalTest02v9MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                serverThread = new ServerThread(Integer.parseInt(serverPortString));
+                serverThread = new ServerThread(8888);
 
                 if (serverThread.getServerSocket() == null) {
                     Log.e(Constants.TAG, "[MAIN ACTIVITY] Could not create server thread!");
@@ -64,8 +65,7 @@ public class PracticalTest02v9MainActivity extends AppCompatActivity {
                 String letter_nr = letterNrEditText.getText().toString();
                 getResponseEditText.setText(Constants.EMPTY_STRING);
 
-                clientThread = new ClientThread("localhost", 5000,
-                        word, letter_nr, getResponseEditText);
+                clientThread = new ClientThread("localhost", 8888, word, letter_nr, getResponseEditText);
                 clientThread.start();
             }
         });
